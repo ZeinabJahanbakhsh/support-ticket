@@ -6,7 +6,7 @@ enum RoleEnum: string
 {
     case default = 'Default';
     case agent = 'Agent';
-    case administrator = 'Admin';
+    case admin = 'Admin';
 
 
 }

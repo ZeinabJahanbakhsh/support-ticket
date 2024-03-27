@@ -3,7 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Status;
 use Illuminate\Database\Seeder;
+use DB;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +15,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        Schema::disableForeignKeyConstraints();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        DB::table('roles')->truncate();
+        DB::table('users')->truncate();
+        DB::table('role_user')->truncate();
+        DB::table('statuses')->truncate();
+
+        Schema::enableForeignKeyConstraints();
+
+        $this->call([
+            RoleSeeder::class,
+            UserSeeder::class,
+            RoleUserSeeder::class,
+            StatusSeeder::class
+        ]);
+
     }
 }
