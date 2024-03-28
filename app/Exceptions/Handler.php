@@ -2,8 +2,15 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use JetBrains\PhpStorm\NoReturn;
 use Throwable;
+
 
 class Handler extends ExceptionHandler
 {
@@ -27,4 +34,21 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e): Response|JsonResponse|RedirectResponse
+    {
+        /*if (
+            $e instanceof ModelNotFoundException or
+            $e instanceof QueryException
+        ) {*/
+            return response()->json([
+                'message' => "Invalid request. ",
+                'data'    => $e->getMessage()
+            ], 404);
+       /* }
+
+        return parent::render($request, $e);*/
+    }
+
+
 }
