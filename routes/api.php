@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\LabelController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\LabelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-//Label Controller
+//Label
 Route::resource('labels', LabelController::class)->except('edit', 'create');
+
+//Category
+Route::resource('categories', CategoryController::class)->except('edit', 'create');

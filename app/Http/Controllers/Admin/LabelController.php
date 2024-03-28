@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LabelRequest;
 use App\Http\Resources\LabelResource;
 use App\Models\Label;
 use DB;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\View\AnonymousComponent;
-use Illuminate\Contracts\Validation\Validator;
 
 
 class LabelController extends Controller
