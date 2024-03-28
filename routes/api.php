@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LabelController;
+use App\Http\Controllers\Admin\PriorityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +28,6 @@ Route::resource('labels', LabelController::class)->except('edit', 'create');
 
 //Category
 Route::resource('categories', CategoryController::class)->except('edit', 'create');
+
+//Priority
+Route::resource('priorities',PriorityController::class);

@@ -15,9 +15,9 @@ return new class extends Migration {
             $table->string('title', 300);
             $table->string('description', 1500);
             $table->string('attachment')->nullable();
-            $table->foreignId('priority_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('status_id')->constrained();
+            $table->foreignId('priority_id')->nullable()->constrained();
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('status_id')->nullable()->constrained();
             $table->timestamps();
         });
     }
