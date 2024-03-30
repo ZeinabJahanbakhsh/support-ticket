@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class Ticket extends Model
@@ -59,5 +61,22 @@ class Ticket extends Model
                     ->withTimestamps();
     }
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scope Models
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeOpenStatus(Builder $builder): Builder
+    {
+        return $builder->where('status_id', Status::whereCode(StatusEnum::open)->value('id'));
+    }
+
+    public function scopeCloseStatus(Builder $builder): Builder
+    {
+        return $builder->where('status_id', Status::whereCode(StatusEnum::close)->value('id'));
+    }
 
 }

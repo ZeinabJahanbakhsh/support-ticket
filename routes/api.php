@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\Admin\PriorityController;
+use App\Http\Controllers\Admin\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,4 +31,10 @@ Route::resource('labels', LabelController::class)->except('edit', 'create');
 Route::resource('categories', CategoryController::class)->except('edit', 'create');
 
 //Priority
-Route::resource('priorities',PriorityController::class);
+Route::resource('priorities', PriorityController::class)->except('edit', 'create');
+
+//Ticket
+Route::get('tickets', [TicketController::class, 'index']);
+Route::get('tickets/{ticket}', [TicketController::class, 'show']);
+Route::post('tickets', [TicketController::class, 'store']);
+Route::get('tickets/{ticket}', [TicketController::class, 'getTicketsByStatus']);

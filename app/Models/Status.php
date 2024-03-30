@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 
 class Status extends Model
 {
@@ -17,5 +18,12 @@ class Status extends Model
     protected $casts = [
         'code' => StatusEnum::class
     ];
+
+
+   /*
+  |--------------------------------------------------------------------------
+  | Scope Models
+  |--------------------------------------------------------------------------
+  */
 
 }

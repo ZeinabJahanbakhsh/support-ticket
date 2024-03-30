@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('attachment')->nullable();
             $table->foreignId('priority_id')->nullable()->constrained();
             $table->foreignId('user_id')->nullable()->constrained();
-            $table->foreignId('status_id')->nullable()->constrained();
+            $table->foreignId('status_id')->constrained();
             $table->timestamps();
         });
     }
