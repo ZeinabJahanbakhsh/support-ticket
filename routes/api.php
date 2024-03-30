@@ -23,6 +23,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->middleware('auth:sanctum');
+
 
 //Label
 Route::resource('labels', LabelController::class)->except('edit', 'create');
@@ -34,7 +38,10 @@ Route::resource('categories', CategoryController::class)->except('edit', 'create
 Route::resource('priorities', PriorityController::class)->except('edit', 'create');
 
 //Ticket
-Route::get('tickets', [TicketController::class, 'index']);
-Route::get('tickets/{ticket}', [TicketController::class, 'show']);
-Route::post('tickets', [TicketController::class, 'store']);
-Route::get('tickets/{ticket}', [TicketController::class, 'getTicketsByStatus']);
+Route::prefix('tickets')->controller(TicketController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::post('/', 'store');
+    Route::get('{tickets}', 'show');
+    Route::get('{status}', 'getTicketsByStatus');
+});
+
