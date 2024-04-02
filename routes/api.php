@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\Admin\PriorityController;
 use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
-Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->middleware('auth:sanctum');
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:loginUser');
 
 
 //Label

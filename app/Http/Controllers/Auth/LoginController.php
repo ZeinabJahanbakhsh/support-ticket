@@ -16,14 +16,19 @@ class LoginController extends Controller
     {
         $request->validated();
 
-        if (!Auth::attempt($request->only(['email', 'password']))){
+        if (!Auth::attempt($request->only(['email', 'password']))) {
             return response()->json([
-               'message' => __('messages.operation_failed')
+                'message' => __('messages.operation_failed')
             ]);
         }
 
+        $user          = Auth::user();
+        $data['email'] = $user->email; //$request->email
+        $data['token'] = $user->createToken('login-user-token')->plainTextToken;
+
         return response()->json([
-           'message' => __('messages.login_user_success'),
+            'message' => __('messages.login_user_success'),
+            'data'    => $data
         ]);
     }
 
