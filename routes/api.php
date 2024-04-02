@@ -3,8 +3,9 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\Admin\PriorityController;
-use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\User\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,25 +25,45 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+Route::post('/register', [RegisterController::class, 'register']);
 
 Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:loginUser');
 
 
-//Label
-Route::resource('labels', LabelController::class)->except('edit', 'create');
+//Admin
+Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
 
-//Category
-Route::resource('categories', CategoryController::class)->except('edit', 'create');
+    //Label
+    Route::resource('labels', LabelController::class)->except('edit', 'create');
 
-//Priority
-Route::resource('priorities', PriorityController::class)->except('edit', 'create');
+    //Category
+    Route::resource('categories', CategoryController::class)->except('edit', 'create');
+
+    //Priority
+    Route::resource('priorities', PriorityController::class)->except('edit', 'create');
+
+});
+
 
 //Ticket
-Route::prefix('tickets')->controller(TicketController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::post('/', 'store');
-    Route::get('{tickets}', 'show');
-    Route::get('{status}', 'getTicketsByStatus');
+Route::prefix('tickets')->middleware(['auth:sanctum'])->controller(TicketController::class)->group(function () {
+
+    Route::middleware(['is_agent'])->group(function () {
+        Route::post('/', 'store')->middleware(['is_default']);                   //agent, default
+        Route::put('/', 'update')->middleware(['is_admin']);                     //admin, agent
+    });
+
+    Route::middleware(['is_admin', 'is_agent', 'is_default'])->group(function () {
+
+        //Filter ticket by sth:
+        Route::get('{status}', 'getTicketsByStatus');
+        Route::get('{priority}', 'getTicketsByPriority');
+        Route::get('{category}', 'getTicketsByCategory');
+
+        Route::get('/', 'index');        //admin, agent, default
+        Route::get('{tickets}', 'show'); //admin, agent, default
+
+    });
+
 });
 

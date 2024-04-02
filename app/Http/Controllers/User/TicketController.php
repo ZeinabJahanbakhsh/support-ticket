@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
-use App\Enums\StatusEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TickerRequest;
+use App\Http\Requests\StoreTicketRequest;
 use App\Http\Resources\TicketResource;
-use App\Models\Status;
 use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,7 +30,7 @@ class TicketController extends Controller
     }
 
 
-    public function store(TickerRequest $request): JsonResponse
+    public function store(StoreTicketRequest $request): JsonResponse
     {
         $request->validated();
 
@@ -41,7 +39,7 @@ class TicketController extends Controller
             'description' => $request->string('description'),
             'attachment'  => $request->file('attachment'),
             'priority_id' => $request->input('priority_id'),
-            'user_id'     => $request->input('user_id'),
+            'user_id'     => auth()->user()->id,
             'status_id'   => $request->integer('status_id'),
         ]);
 
@@ -86,7 +84,9 @@ class TicketController extends Controller
 
     public function update(Request $request, string $id)
     {
-        //
+        //admin can fill assigned_to column or dont want
+
+
     }
 
 

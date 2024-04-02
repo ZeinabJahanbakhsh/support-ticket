@@ -23,6 +23,7 @@ class Ticket extends Model
         'priority_id' => 'integer',
         'user_id'     => 'integer',
         'status_id'   => 'integer',
+        'assigned_to' => 'integer',
     ];
 
 
@@ -60,7 +61,6 @@ class Ticket extends Model
                     ->using(LabelTicket::class)
                     ->withTimestamps();
     }
-
 
 
     /*

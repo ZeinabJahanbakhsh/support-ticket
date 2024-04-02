@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 
-class TickerRequest extends FormRequest
+class UpdateTicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +29,7 @@ class TickerRequest extends FormRequest
             'attachment'  => [File::types(['png', 'jpg', 'docx', 'doc'])],
             'priority_id' => ['nullable', 'integer', 'exists:priorities,id'],
             'status_id'   => ['required', 'integer', 'exists:statuses,id'],
-            'user_id'     => ['nullable', 'integer', 'exists:users,id']
+            'assigned_to' => ['nullable', 'integer', 'exists:users,id'] //
         ];
     }
 }
