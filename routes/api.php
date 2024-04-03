@@ -49,8 +49,8 @@ Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
 //Ticket
 Route::prefix('tickets')->middleware(['auth:sanctum'])->controller(TicketController::class)->group(function () {
 
-    Route::post('/', 'store')->middleware(['agent.default.roles.access']);    //agent, default
-    Route::put('/', 'update')->middleware(['admin.agent.roles.access']);      //admin, agent
+    Route::post('/', 'store')->middleware(['agent.default.roles.access']);            //agent, default
+    Route::put('/{ticket}', 'update')->middleware(['admin.agent.roles.access']);      //admin, agent
 
 
     Route::middleware('all.roles.access')->group(function () {

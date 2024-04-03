@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 
+
 class UpdateTicketRequest extends FormRequest
 {
     /**
@@ -23,13 +24,19 @@ class UpdateTicketRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title'       => ['required', 'string', 'max:300', 'min:3'],
             'description' => ['required', 'string', 'max:1500', 'min:3'],
             'attachment'  => [File::types(['png', 'jpg', 'docx', 'doc'])],
             'priority_id' => ['nullable', 'integer', 'exists:priorities,id'],
             'status_id'   => ['required', 'integer', 'exists:statuses,id'],
-            'assigned_to' => ['nullable', 'integer', 'exists:users,id'] //
         ];
+
+        if (\Auth::user()->roles()->adminRole()->get()->isNotEmpty()){
+            $rules['assigned_to'] = ['nullable', 'integer', 'exists:users,id'] ;
+        }
+
+
+        return $rules;
     }
 }

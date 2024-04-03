@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
@@ -82,11 +83,28 @@ class TicketController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id)
+
+    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
-        //admin can fill assigned_to column or dont want
+        $request->validated();
 
+        $ticket->forceFill([
+            'title'       => $request->string('title'),
+            'description' => $request->string('description'),
+            'attachment'  => $request->file('attachment'),
+            'priority_id' => $request->input('priority_id'),
+            'status_id'   => $request->integer('status_id'),
+        ])->save();
 
+        if (\Auth::user()->roles()->adminRole()->get()->isNotEmpty()){
+            $ticket->assigned_to = $request->input('assigned_to');
+            $ticket->save();
+        }
+
+        return response()->json([
+            'message' => __('messages.update_success'),
+            'data'    => $ticket
+        ]);
     }
 
 
