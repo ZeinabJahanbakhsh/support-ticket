@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketResource;
+use App\Models\Category;
+use App\Models\Priority;
 use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -84,6 +86,17 @@ class TicketController extends Controller
     }
 
 
+    public function getTicketsByPriority(Priority $priority): JsonResponse|AnonymousResourceCollection
+    {
+        $ticketsByPriority = Ticket::where('priority_id', $priority->id)->get();
+
+        return TicketResource::collection($ticketsByPriority)
+                             ->additional([
+                                 'count' => $ticketsByPriority->count()
+                             ]);
+    }
+
+
     public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
         $request->validated();
@@ -96,7 +109,7 @@ class TicketController extends Controller
             'status_id'   => $request->integer('status_id'),
         ])->save();
 
-        if (\Auth::user()->roles()->adminRole()->get()->isNotEmpty()){
+        if (\Auth::user()->roles()->adminRole()->get()->isNotEmpty()) {
             $ticket->assigned_to = $request->input('assigned_to');
             $ticket->save();
         }

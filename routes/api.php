@@ -60,9 +60,9 @@ Route::prefix('tickets')->middleware(['auth:sanctum'])->controller(TicketControl
         Route::get('/', 'index');
 
         //Filter ticket by sth:
-        Route::get('{status}', 'getTicketsByStatus');
-        Route::get('{priority}', 'getTicketsByPriority');
-        Route::get('{category}', 'getTicketsByCategory');
+        Route::get('statuses/{status}', 'getTicketsByStatus');
+        Route::get('priorities/{priority}', 'getTicketsByPriority');
+        Route::get('categories/{category}', 'getTicketsByCategory');
 
     });
 
