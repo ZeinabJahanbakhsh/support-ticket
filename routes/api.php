@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PriorityController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\TicketController;
+use App\Http\Middleware\AllRolesAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,7 +32,7 @@ Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:l
 
 
 //Admin
-Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
 
     //Label
     Route::resource('labels', LabelController::class)->except('edit', 'create');
@@ -48,12 +49,12 @@ Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
 //Ticket
 Route::prefix('tickets')->middleware(['auth:sanctum'])->controller(TicketController::class)->group(function () {
 
-    Route::middleware(['is_agent'])->group(function () {
-        Route::post('/', 'store')->middleware(['is_default']);                   //agent, default
-        Route::put('/', 'update')->middleware(['is_admin']);                     //admin, agent
+    Route::middleware(['is.agent'])->group(function () {
+        Route::post('/', 'store')->middleware(['is.default']);                   //agent, default
+        Route::put('/', 'update')->middleware(['is.admin']);                     //admin, agent
     });
 
-    Route::middleware(['is_admin', 'is_agent', 'is_default'])->group(function () {
+    Route::middleware('all.roles.access')->group(function () {
 
         //Filter ticket by sth:
         Route::get('{status}', 'getTicketsByStatus');

@@ -4,6 +4,7 @@ return [
     'update_success'     => 'Update data successfully',
     'delete_success'     => 'Delete data successfully',
     'operation_failed'   => 'Operation failed!',
+    'login_failed'       => 'You dont have permission to access!',
     'login_user_success' => 'User login successfully',
 
 

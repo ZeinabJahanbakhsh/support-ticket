@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AllRolesAccess;
 use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isAgent;
 use App\Http\Middleware\isDefault;
@@ -71,9 +72,10 @@ class Kernel extends HttpKernel
         /*
          * My Middleware
          */
-        'is_admin'         => isAdmin::class,
-        'is_default'       => isDefault::class,
-        'is_agent'         => isAgent::class,
+        'is.admin'         => isAdmin::class,
+        'is.default'       => isDefault::class,
+        'is.agent'         => isAgent::class,
+        'all.roles.access' => AllRolesAccess::class
 
     ];
 }
