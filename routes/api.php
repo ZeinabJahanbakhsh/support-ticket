@@ -49,20 +49,20 @@ Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
 //Ticket
 Route::prefix('tickets')->middleware(['auth:sanctum'])->controller(TicketController::class)->group(function () {
 
-    Route::middleware(['is.agent'])->group(function () {
-        Route::post('/', 'store')->middleware(['is.default']);                   //agent, default
-        Route::put('/', 'update')->middleware(['is.admin']);                     //admin, agent
-    });
+    Route::post('/', 'store')->middleware(['agent.default.roles.access']);    //agent, default
+    Route::put('/', 'update')->middleware(['admin.agent.roles.access']);      //admin, agent
+
 
     Route::middleware('all.roles.access')->group(function () {
+
+        //admin, agent, default
+        Route::get('{ticket}', 'show');
+        Route::get('/', 'index');
 
         //Filter ticket by sth:
         Route::get('{status}', 'getTicketsByStatus');
         Route::get('{priority}', 'getTicketsByPriority');
         Route::get('{category}', 'getTicketsByCategory');
-
-        Route::get('/', 'index');        //admin, agent, default
-        Route::get('{tickets}', 'show'); //admin, agent, default
 
     });
 

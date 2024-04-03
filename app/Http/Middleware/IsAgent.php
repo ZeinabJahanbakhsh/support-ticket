@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class isAgent
+class IsAgent
 {
     public function handle(Request $request, Closure $next): Response
     {
