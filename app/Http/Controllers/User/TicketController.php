@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\Category;
+use App\Models\CategoryTicket;
 use App\Models\Priority;
 use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
@@ -22,6 +23,7 @@ class TicketController extends Controller
             'priority',
             'user',
             'status',
+            'categories'
         ])->latest();
 
         return TicketResource::collection($tickets->get())
@@ -97,6 +99,18 @@ class TicketController extends Controller
     }
 
 
+    public function getTicketsByCategory(Category $category): AnonymousResourceCollection
+    {
+        $ticketsByCategory = $category->tickets()->get();
+
+        return TicketResource::collection($ticketsByCategory)
+                             ->additional([
+                                 'count' => $ticketsByCategory->count()
+                             ]);
+
+    }
+
+
     public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
         $request->validated();
@@ -125,4 +139,6 @@ class TicketController extends Controller
     {
         //
     }
+
+
 }
