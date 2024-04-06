@@ -58,6 +58,7 @@ Route::prefix('tickets')->middleware(['auth:sanctum'])->controller(TicketControl
         //admin, agent, default
         Route::get('{ticket}', 'show');
         Route::get('/', 'index');
+        //        Route::get('{ticket}/{user}', 'index');
 
         //Filter ticket by sth:
         Route::get('statuses/{status}', 'getTicketsByStatus');

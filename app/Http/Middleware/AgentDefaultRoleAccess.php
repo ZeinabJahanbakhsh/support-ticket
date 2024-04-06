@@ -6,26 +6,21 @@ use App\Enums\RoleEnum;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use function App\Helpers\agentRole;
+use function App\Helpers\defaultRole;
 
 class AgentDefaultRoleAccess
 {
 
     public function handle(Request $request, Closure $next): Response
     {
-        $userRole = $request->user()->roles->toArray();
-
-        if (
-            $userRole[0]['code'] == RoleEnum::agent->value
-            ||
-            $userRole[0]['code'] == RoleEnum::default->value
-        ) {
+        if (agentRole($request->user()) || defaultRole($request->user())) {
             return $next($request);
         }
 
         return response()->json([
             'message' => __('messages.login_failed'),
         ]);
-
     }
 
 }

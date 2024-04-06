@@ -6,21 +6,16 @@ use App\Enums\RoleEnum;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use function App\Helpers\adminRole;
+use function App\Helpers\agentRole;
+use function App\Helpers\defaultRole;
 
 class AllRolesAccess
 {
 
     public function handle(Request $request, Closure $next): Response
     {
-        $userRole = $request->user()->roles->toArray();
-
-        if (
-            $userRole[0]['code'] == RoleEnum::admin->value
-            ||
-            $userRole[0]['code'] == RoleEnum::agent->value
-            ||
-            $userRole[0]['code'] == RoleEnum::default->value
-        ) {
+        if (adminRole($request->user()) || agentRole($request->user()) || defaultRole($request->user())) {
             return $next($request);
         }
 

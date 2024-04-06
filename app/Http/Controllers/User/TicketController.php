@@ -10,15 +10,24 @@ use App\Models\Category;
 use App\Models\CategoryTicket;
 use App\Models\Priority;
 use App\Models\Ticket;
+use App\Models\User;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 
 
 class TicketController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(): JsonResponse|AnonymousResourceCollection
     {
+        if (!Gate::allows('viewAny', Ticket::class)) {
+            return response()->json([
+                'message' => __('messages.permission_deny')
+            ]);
+        }
+
         $tickets = Ticket::with([
             'priority',
             'user',
@@ -57,6 +66,7 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket): TicketResource
     {
+        $this->authorize('view', $ticket);
         return new TicketResource($ticket);
     }
 
@@ -111,8 +121,10 @@ class TicketController extends Controller
     }
 
 
-    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
+    public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
+        $this->authorize('update', $ticket);
+
         $request->validated();
 
         $ticket->forceFill([
@@ -123,7 +135,7 @@ class TicketController extends Controller
             'status_id'   => $request->integer('status_id'),
         ])->save();
 
-        if (\Auth::user()->roles()->adminRole()->get()->isNotEmpty()) {
+        if (Auth::user()->roles()->adminRole()->get()->isNotEmpty()) {
             $ticket->assigned_to = $request->input('assigned_to');
             $ticket->save();
         }
@@ -134,11 +146,6 @@ class TicketController extends Controller
         ]);
     }
 
-
-    public function destroy(string $id)
-    {
-        //
-    }
 
 
 }
