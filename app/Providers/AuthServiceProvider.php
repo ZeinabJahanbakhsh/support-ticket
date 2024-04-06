@@ -26,6 +26,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        //$this->registerPolicies();
+
+        \Gate::define('index-tickets', function (User $user){
+            $userRole = $user->roles->toArray();
+            return $userRole[0]['code'] == RoleEnum::admin->value;
+        });
+
     }
 }
