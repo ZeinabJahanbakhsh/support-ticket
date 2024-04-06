@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Auth\Access\Response;
 use function App\Helpers\adminRole;
 use function App\Helpers\agentRole;
+use function App\Helpers\defaultRole;
 
 
 class TicketPolicy

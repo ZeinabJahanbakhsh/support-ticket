@@ -22,17 +22,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::post('/register', [RegisterController::class, 'register']);
 
-Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:loginUser');
+Route::post('/login', [LoginController::class, 'login'])->middleware(['throttle:loginUser']);
 
 
 //Admin
-Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function () {
 
     //Label
     Route::resource('labels', LabelController::class)->except('edit', 'create');
@@ -43,28 +43,38 @@ Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
     //Priority
     Route::resource('priorities', PriorityController::class)->except('edit', 'create');
 
-});
+
+    Route::controller(\App\Http\Controllers\Admin\TicketController::class)->prefix('tickets')->group(function () {
+            Route::get('/', 'index');
+            Route::get('{ticket}', 'show');
+            Route::put('/{ticket}', 'update');  //admin, TODO: agent
+            Route::get('statuses/{status}', 'getTicketsByStatus');
+            Route::get('priorities/{priority}', 'getTicketsByPriority');
+            Route::get('categories/{category}', 'getTicketsByCategory');
+        });
+
+    }); //  ./admins
+
 
 
 //Ticket
-Route::prefix('tickets')->middleware(['auth:sanctum'])->controller(TicketController::class)->group(function () {
-
-    Route::post('/', 'store')->middleware(['agent.default.roles.access']);            //agent, default
-    Route::put('/{ticket}', 'update')->middleware(['admin.agent.roles.access']);      //admin, agent
+Route::prefix('tickets')->middleware(['auth:sanctum'])->group(function () {
 
 
-    Route::middleware('all.roles.access')->group(function () {
+    Route::controller(\App\Http\Controllers\User\TicketController::class)
+         ->middleware(['agent.default.roles.access'])->group(function () {
+            Route::post('users', 'store');  //agent, default
 
-        //admin, agent, default
-        Route::get('{ticket}', 'show');
-        Route::get('/', 'index');
+            Route::prefix('users/{user}')->group(function () {
+                Route::get('{ticket}', 'show'); //agent, default
+                Route::get('/', 'index');       //agent, default
+                Route::get('statuses/{status}', 'getTicketsByStatus');
+                Route::get('priorities/{priority}', 'getTicketsByPriority');
+                Route::get('categories/{category}', 'getTicketsByCategory');
+            });
 
-        //Filter ticket by sth:
-        Route::get('statuses/{status}', 'getTicketsByStatus');
-        Route::get('priorities/{priority}', 'getTicketsByPriority');
-        Route::get('categories/{category}', 'getTicketsByCategory');
+        });//  ./users/{user}
 
-    });
 
-});
+});//  ./tickets
 
