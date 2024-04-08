@@ -17,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
+use function App\Helpers\adminRole;
 
 
 class TicketController extends Controller
@@ -102,7 +103,7 @@ class TicketController extends Controller
     }
 
 
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
         $this->authorize('update', $ticket);
 
@@ -116,7 +117,7 @@ class TicketController extends Controller
             'status_id'   => $request->integer('status_id'),
         ])->save();
 
-        if (Auth::user()->roles()->adminRole()->get()->isNotEmpty()) {
+        if (adminRole(Auth::user())) {
             $ticket->assigned_to = $request->input('assigned_to');
             $ticket->save();
         }

@@ -4,7 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\File;
+use function App\Helpers\adminRole;
 
 
 class UpdateTicketRequest extends FormRequest
@@ -32,10 +34,9 @@ class UpdateTicketRequest extends FormRequest
             'status_id'   => ['required', 'integer', 'exists:statuses,id'],
         ];
 
-        if (\Auth::user()->roles()->adminRole()->get()->isNotEmpty()){
-            $rules['assigned_to'] = ['nullable', 'integer', 'exists:users,id'] ;
+        if (adminRole(Auth::user())) {
+            $rules['assigned_to'] = ['nullable', 'integer', 'exists:users,id'];
         }
-
 
         return $rules;
     }

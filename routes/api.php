@@ -23,9 +23,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 Route::post('/register', [RegisterController::class, 'register']);
 
@@ -33,6 +33,9 @@ Route::post('/login', [LoginController::class, 'login'])->middleware(['throttle:
 
 
 //Admin
+Route::put('admin/tickets/{ticket}', [\App\Http\Controllers\Admin\TicketController::class, 'update'])
+     ->middleware(['auth:sanctum', 'admin.agent.roles.access']);  //admin, agent
+
 Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function () {
 
     //Label
@@ -48,7 +51,6 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function
     Route::controller(\App\Http\Controllers\Admin\TicketController::class)->prefix('tickets')->group(function () {
         Route::get('/', 'index');
         Route::get('{ticket}', 'show');
-        Route::put('/{ticket}', 'update');  //admin, TODO: agent
         Route::get('statuses/{status}', 'getTicketsByStatus');
         Route::get('priorities/{priority}', 'getTicketsByPriority');
         Route::get('categories/{category}', 'getTicketsByCategory');

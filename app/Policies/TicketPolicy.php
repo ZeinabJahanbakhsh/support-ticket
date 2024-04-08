@@ -34,7 +34,13 @@ class TicketPolicy
     // Admin, Agent
     public function update(User $user, Ticket $ticket): bool
     {
-        if (adminRole($user) || ($ticket->user_id == $user->id && agentRole($user))) {
+        if (adminRole($user)) {
+            return true;
+        }
+        if ($ticket->assigned_to == null && ($ticket->user_id == $user->id && agentRole($user)) ){
+            return true;
+        }
+        if ($ticket->assigned_to != null && ($ticket->assigned_to == $user->id && agentRole($user))){
             return true;
         }
         return false;
