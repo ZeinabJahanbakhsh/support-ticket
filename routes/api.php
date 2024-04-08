@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\Admin\PriorityController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\TicketController;
@@ -51,9 +52,12 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function
             Route::get('statuses/{status}', 'getTicketsByStatus');
             Route::get('priorities/{priority}', 'getTicketsByPriority');
             Route::get('categories/{category}', 'getTicketsByCategory');
+            Route::post('{ticket}/change-status', 'changeStatus');
         });
 
-    }); //  ./admins
+
+
+}); //  ./admins
 
 
 

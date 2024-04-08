@@ -20,23 +20,9 @@ class LabelRequest extends FormRequest
 
     public function rules(): array
     {
-        /*dd($this->route('label')->id,
-            $this);*/
-
-        //dd(Rule::unique(Guidance::class, 'employment_no')->ignore($guidance));
 
         return [
-            //'name' => ['required', 'string', 'max:200', 'min:3', Rule::unique('labels', 'name')->ignore($this->id)]
-            //'name' => ['required', 'string', 'max:200', 'min:3', Rule::unique('labels', 'name')->ignore($this->route($this->route('label'))->id)]
-            //'name' => ['required', 'string', 'max:200', 'min:3', Rule::unique('labels', 'name')->ignore($this->label->id)]
-            'name' => ['required', 'string', 'max:200', 'min:3'/*, Rule::unique(Label::class, 'name')*//*->ignore($this->route('label'))*/]
-            //'name' => ['required', 'string', 'max:200', 'min:3', 'unique:labels,name,' . $this->label->id ],
-            //'unique:users,name,' . $this->user
-            //'email' => ['nullable', 'string', 'email', 'max:100', 'unique:users,email,' . $this->user . ',user_id'],
-            //'email' => 'required|email|unique:users,email,'.$this->user->id,
-            //'email' => 'required|email|unique:users,email,'.$this->user()->id,
-
-
+            'name' => ['required', 'string', 'max:200', 'min:3']
         ];
     }
 

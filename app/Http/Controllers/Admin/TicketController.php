@@ -9,6 +9,7 @@ use App\Http\Resources\TicketResource;
 use App\Models\Category;
 use App\Models\CategoryTicket;
 use App\Models\Priority;
+use App\Models\Status;
 use App\Models\Ticket;
 use App\Models\User;
 use Auth;
@@ -119,6 +120,25 @@ class TicketController extends Controller
             $ticket->assigned_to = $request->input('assigned_to');
             $ticket->save();
         }
+
+        return response()->json([
+            'message' => __('messages.update_success'),
+            'data'    => $ticket
+        ]);
+    }
+
+
+    public function changeStatus(Request $request, Ticket $ticket): JsonResponse
+    {
+        $status_id = Status::find($request->integer('status_id'));
+        abort_if(
+            !$status_id,
+            404,
+            __('messages.operation_failed')
+        );
+
+        $ticket->status_id = $request->integer('status_id');
+        $ticket->save();
 
         return response()->json([
             'message' => __('messages.update_success'),
