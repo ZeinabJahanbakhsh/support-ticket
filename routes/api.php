@@ -46,39 +46,33 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function
 
 
     Route::controller(\App\Http\Controllers\Admin\TicketController::class)->prefix('tickets')->group(function () {
-            Route::get('/', 'index');
-            Route::get('{ticket}', 'show');
-            Route::put('/{ticket}', 'update');  //admin, TODO: agent
-            Route::get('statuses/{status}', 'getTicketsByStatus');
-            Route::get('priorities/{priority}', 'getTicketsByPriority');
-            Route::get('categories/{category}', 'getTicketsByCategory');
-            Route::post('{ticket}/change-status', 'changeStatus');
-        });
+        Route::get('/', 'index');
+        Route::get('{ticket}', 'show');
+        Route::put('/{ticket}', 'update');  //admin, TODO: agent
+        Route::get('statuses/{status}', 'getTicketsByStatus');
+        Route::get('priorities/{priority}', 'getTicketsByPriority');
+        Route::get('categories/{category}', 'getTicketsByCategory');
+        Route::post('{ticket}/change-status', 'changeStatus');
+    });
 
 
+    Route::resource('users', UserController::class)->except('edit', 'create');
 
-}); //  ./admins
 
+}); //  ./admin
 
 
 //Ticket
-Route::prefix('tickets')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('users/{user}/tickets')->middleware(['auth:sanctum', 'agent.default.roles.access'])
+     ->controller(\App\Http\Controllers\User\TicketController::class)
+     ->group(function () {
+         Route::post('', 'store');  //agent, default
 
+         Route::get('{ticket}', 'show'); //agent, default
+         Route::get('/', 'index');       //agent, default
+         Route::get('statuses/{status}', 'getTicketsByStatus');
+         Route::get('priorities/{priority}', 'getTicketsByPriority');
+         Route::get('categories/{category}', 'getTicketsByCategory');
 
-    Route::controller(\App\Http\Controllers\User\TicketController::class)
-         ->middleware(['agent.default.roles.access'])->group(function () {
-            Route::post('users', 'store');  //agent, default
-
-            Route::prefix('users/{user}')->group(function () {
-                Route::get('{ticket}', 'show'); //agent, default
-                Route::get('/', 'index');       //agent, default
-                Route::get('statuses/{status}', 'getTicketsByStatus');
-                Route::get('priorities/{priority}', 'getTicketsByPriority');
-                Route::get('categories/{category}', 'getTicketsByCategory');
-            });
-
-        });//  ./users/{user}
-
-
-});//  ./tickets
+     });//  ./users/{user}/tickets
 

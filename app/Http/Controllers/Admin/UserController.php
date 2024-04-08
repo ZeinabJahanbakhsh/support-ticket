@@ -2,60 +2,65 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use DB;
+use function PHPUnit\Framework\isEmpty;
+
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
-        //
+        $users = User::with([
+            'roles'
+        ])->get();
+        return UserResource::collection($users)
+                           ->additional([
+                               'count' => $users->count()
+                           ]);
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+
+    public function show(User $user): UserResource
     {
-        //
+        return new UserResource($user->load(['roles']));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreUserRequest $request)
+
+    public function update(User $user, UpdateUserRequest $request)
     {
-        //
+        DB::transaction(function () use ($request, $user) {
+
+            $user->forceFill([
+                'name'     => $request->string('name'),
+                'email'    => $request->string('email'),
+                'password' => $request->string('password'),
+            ])->save();
+
+            if (isEmpty($request->input('role-ids'))) {
+                $user->roles()->attach(Role::whereCode(RoleEnum::default)->value('id'));
+            }
+            $request->collect('role_ids')->each(function ($value) use ($user) {
+                $user->roles()->sync($value);
+            });
+
+        });
+
+        return response()->json([
+            'message' => __('messages.update_success'),
+            'data'    => $user
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
