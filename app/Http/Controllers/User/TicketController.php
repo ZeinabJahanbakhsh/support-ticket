@@ -12,6 +12,7 @@ use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\User;
 use Auth;
+use DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -20,17 +21,10 @@ use Illuminate\Support\Facades\Gate;
 
 class TicketController extends Controller
 {
-    public function index(): JsonResponse|AnonymousResourceCollection
+    public function index(User $user): JsonResponse|AnonymousResourceCollection
     {
-        if (!Gate::allows('viewAny', Ticket::class)) {
-            return response()->json([
-                'message' => __('messages.permission_deny')
-            ]);
-        }
-
-        $tickets = Ticket::with([
+        $tickets = $user->tickets()->with([
             'priority',
-            'user',
             'status',
             'categories'
         ])->latest();
@@ -44,18 +38,25 @@ class TicketController extends Controller
     }
 
 
-    public function store(StoreTicketRequest $request): JsonResponse
+    public function store(User $user, StoreTicketRequest $request): JsonResponse
     {
         $request->validated();
 
-        $ticket = Ticket::forceCreate([
-            'title'       => $request->string('title'),
-            'description' => $request->string('description'),
-            'attachment'  => $request->file('attachment'),
-            'priority_id' => $request->input('priority_id'),
-            'user_id'     => auth()->user()->id,
-            'status_id'   => $request->integer('status_id'),
-        ]);
+        $ticket =  null;
+        DB::transaction(function () use($user, $request, &$ticket){
+
+            $ticket = $user->tickets()->forceCreate([
+                'title'       => $request->string('title'),
+                'description' => $request->string('description'),
+                'attachment'  => $request->file('attachment'),
+                'priority_id' => $request->input('priority_id'),
+                'status_id'   => $request->integer('status_id'),
+            ]);
+
+            $ticket->categories()->attach($request->input('category_ids'));
+
+            $ticket->labels()->attach($request->input('label_ids'));
+        });
 
         return response()->json([
             'message' => __('messages.store_success'),
@@ -145,7 +146,6 @@ class TicketController extends Controller
             'data'    => $ticket
         ]);
     }
-
 
 
 }
