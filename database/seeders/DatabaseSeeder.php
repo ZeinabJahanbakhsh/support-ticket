@@ -33,13 +33,11 @@ class DatabaseSeeder extends Seeder
         DB::table('tickets')->truncate();
         DB::table('roles')->truncate();
         DB::table('users')->truncate();
-        DB::table('role_user')->truncate();
         DB::table('statuses')->truncate();
 
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
-            RoleUserSeeder::class,
             StatusSeeder::class,
             PrioritySeeder::class
         ]);
@@ -50,7 +48,6 @@ class DatabaseSeeder extends Seeder
         Ticket::factory(10)->create();
         CategoryTicket::factory(10)->create();
         LabelTicket::factory(10)->create();
-        RoleUser::factory(10)->create();
 
         Schema::enableForeignKeyConstraints();
 

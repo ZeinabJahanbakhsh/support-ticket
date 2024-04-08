@@ -12,23 +12,13 @@ class IsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-
-        if (adminRole($request->user())){
+        if (adminRole($request->user())) {
             return $next($request);
         }
 
         return response()->json([
             'message' => __('messages.login_failed'),
         ]);
-
-       /* $userRole = $request->user()->roles->toArray();
-
-        if ($userRole[0]['code'] != RoleEnum::admin->value) {
-            return response()->json([
-                'message' => __('messages.login_failed'),
-            ]);
-        }
-        return $next($request);*/
     }
 
 }

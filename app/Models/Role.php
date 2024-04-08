@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class Role extends Model
@@ -28,13 +29,10 @@ class Role extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function users(): BelongsToMany
+    public function users(): HasMany
     {
-        return $this->belongsToMany(User::class, 'role_user')
-                    ->using(RoleUser::class)
-                    ->withTimestamps();
+        return $this->hasMany(User::class, 'role_id');
     }
-
 
 
     /*
@@ -44,7 +42,7 @@ class Role extends Model
     */
     public function scopeAdminRole(Builder $builder): Builder
     {
-        return $builder->where('code',RoleEnum::admin);
+        return $builder->where('code', RoleEnum::admin);
     }
 
     public function scopeAgentRole(Builder $builder): Builder
@@ -54,7 +52,7 @@ class Role extends Model
 
     public function scopeDefaultRole(Builder $builder): Builder
     {
-        return $builder->where('code',RoleEnum::default);
+        return $builder->where('code', RoleEnum::default);
     }
 
 

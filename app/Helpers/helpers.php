@@ -3,14 +3,14 @@
 namespace App\Helpers;
 
 use App\Enums\RoleEnum;
+use App\Models\Role;
 use App\Models\User;
 
 
 if (!function_exists('adminRole')) {
     function adminRole($user): bool
     {
-        $userRole = $user->roles->toArray();
-        return $userRole[0]['code'] == RoleEnum::admin->value;
+        return $user->role_id == Role::whereCode(RoleEnum::admin)->value('id');
     }
 }
 
@@ -18,8 +18,7 @@ if (!function_exists('adminRole')) {
 if (!function_exists('agentRole')) {
     function agentRole($user): bool
     {
-        $userRole = $user->roles->toArray();
-        return $userRole[0]['code'] == RoleEnum::agent->value;
+        return $user->role_id == Role::whereCode(RoleEnum::agent)->value('id');
     }
 }
 
@@ -27,16 +26,7 @@ if (!function_exists('agentRole')) {
 if (!function_exists('defaultRole')) {
     function defaultRole($user): bool
     {
-        $userRole = $user->roles->toArray();
-        return $userRole[0]['code'] == RoleEnum::default->value;
-    }
-}
-
-
-if (!function_exists('userRole')) {
-    function userRole($user): array
-    {
-        return $user->roles->toArray();
+        return $user->role_id == Role::whereCode(RoleEnum::default)->value('id');
     }
 }
 
