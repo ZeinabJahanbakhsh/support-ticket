@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketResource;
+use App\Mail\SendTicketNotification;
+use App\Mail\SendTicketNotificationnnnnnnn;
 use App\Models\Category;
 use App\Models\CategoryTicket;
 use App\Models\Priority;
@@ -17,6 +19,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use function App\Helpers\adminRole;
 
 
 class TicketController extends Controller
@@ -57,6 +61,8 @@ class TicketController extends Controller
 
             $ticket->labels()->attach($request->input('label_ids'));
         });
+
+        Mail::to($user->email)->send(new SendTicketNotification($user->name, $user->email));
 
         return response()->json([
             'message' => __('messages.store_success'),
@@ -136,7 +142,7 @@ class TicketController extends Controller
             'status_id'   => $request->integer('status_id'),
         ])->save();
 
-        if (Auth::user()->roles()->adminRole()->get()->isNotEmpty()) {
+        if (adminRole(Auth::user())) {
             $ticket->assigned_to = $request->input('assigned_to');
             $ticket->save();
         }
