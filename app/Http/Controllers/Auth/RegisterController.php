@@ -10,31 +10,26 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DB;
+use function App\Helpers\adminRole;
 
 
 class RegisterController extends Controller
 {
-    public function register(StoreUserRequest $request)
+    public function register(StoreUserRequest $request): UserResource
     {
         $request->validated();
 
-        DB::transaction(function () use ($request, &$user) {
+        $user = User::forceCreate([
+            'name'     => $request->string('name'),
+            'email'    => $request->string('email'),
+            'password' => $request->string('password'),
+            'role_id'  => Role::whereCode(RoleEnum::default)->value('id')
+        ]);
 
-            $user = User::forceCreate([
-                'name'     => $request->string('name'),
-                'email'    => $request->string('email'),
-                'password' => $request->string('password'),
-            ]);
-
-            $user->roles()->attach([
-                Role::whereCode(RoleEnum::default)->value('id')
-            ]);
-
-            $token = $user->createToken('register-user-token')->plainTextToken;
-            $request->merge([
-                'token' => $token,
-            ]);
-        });
+        $token = $user->createToken('register-user-token')->plainTextToken;
+        $request->merge([
+            'token' => $token,
+        ]);
 
         return new UserResource($user);
     }
