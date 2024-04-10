@@ -6,8 +6,7 @@ use App\Enums\RoleEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use function App\Helpers\adminRole;
-use function App\Helpers\agentRole;
+
 
 
 /**
@@ -32,12 +31,5 @@ class UserResource extends JsonResource
             }),
         ];
     }
-
-//    public function with(Request $request): array
-//    {
-//        return [
-//            'token' => $request->token
-//        ];
-//    }
 
 }

@@ -9,8 +9,6 @@ use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
-use DB;
-use function App\Helpers\adminRole;
 
 
 class RegisterController extends Controller
