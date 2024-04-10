@@ -7,7 +7,6 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketResource;
 use App\Mail\SendTicketNotification;
-use App\Mail\SendTicketNotificationnnnnnnn;
 use App\Models\Category;
 use App\Models\CategoryTicket;
 use App\Models\Priority;
@@ -128,7 +127,7 @@ class TicketController extends Controller
     }
 
 
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
         $this->authorize('update', $ticket);
 
