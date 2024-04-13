@@ -86,7 +86,7 @@ Route::prefix('users/{user}/comments')->middleware(['auth:sanctum', 'all.roles.a
 
          Route::controller(CommentController::class)->group(function () {
              Route::post('/tickets/{ticket}', 'store');//this user want to send cm for this ticket
-             Route::get('{comment}', 'show'); //this user want to see this cm
+             //Route::get('{comment}', 'show'); //this user want to see this cm
 
              Route::get('/tickets/{ticket}/all-comments', 'allCommentsByTicketId'); //all comments of this ticket_id
 

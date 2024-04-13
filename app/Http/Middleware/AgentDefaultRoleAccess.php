@@ -12,8 +12,9 @@ use function App\Helpers\defaultRole;
 class AgentDefaultRoleAccess
 {
 
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
+
         if (agentRole($request->user()) || defaultRole($request->user())) {
             return $next($request);
         }

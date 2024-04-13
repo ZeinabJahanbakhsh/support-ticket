@@ -70,7 +70,7 @@ class TicketController extends Controller
     }
 
 
-    public function show(Ticket $ticket)
+    public function show(Ticket $ticket): TicketResource
     {
         $this->authorize('view', $ticket);
         return new TicketResource($ticket);
