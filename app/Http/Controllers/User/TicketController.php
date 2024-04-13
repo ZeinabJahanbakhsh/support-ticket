@@ -45,8 +45,8 @@ class TicketController extends Controller
     {
         $request->validated();
 
-        $ticket =  null;
-        DB::transaction(function () use($user, $request, &$ticket){
+        $ticket = null;
+        DB::transaction(function () use ($user, $request, &$ticket) {
 
             $ticket = $user->tickets()->forceCreate([
                 'title'       => $request->string('title'),
@@ -72,8 +72,7 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
-        dd($ticket);
-        $this->authorize('view',  $ticket);
+        $this->authorize('view', $ticket);
         return new TicketResource($ticket);
     }
 

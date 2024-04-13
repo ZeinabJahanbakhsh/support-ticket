@@ -34,7 +34,8 @@ class TicketController extends Controller
             'priority',
             'user',
             'status',
-            'categories'
+            'categories',
+            'assignedUser'
         ])->latest();
 
         return TicketResource::collection($tickets->get())

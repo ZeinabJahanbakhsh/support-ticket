@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PriorityController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\TicketController;
 use App\Http\Middleware\AllRolesAccess;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ Route::post('/login', [LoginController::class, 'login'])->middleware(['throttle:
 //Admin
 Route::put('admin/tickets/{ticket}', [\App\Http\Controllers\Admin\TicketController::class, 'update'])
      ->middleware(['auth:sanctum', 'admin.agent.roles.access']);  //admin, agent
+
 
 Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function () {
 
@@ -70,11 +72,29 @@ Route::prefix('users/{user}/tickets')->middleware(['auth:sanctum', 'agent.defaul
      ->group(function () {
          Route::post('', 'store');  //agent, default
 
-         Route::get('{ticket}', 'show'); //agent, default
-         Route::get('/', 'index');       //agent, default
+         Route::get('{ticket}', 'show'); //agent, default //show its comments
+         Route::get('/', 'index');       //agent, default  TODO: be check again!
          Route::get('statuses/{status}', 'getTicketsByStatus');
          Route::get('priorities/{priority}', 'getTicketsByPriority');
          Route::get('categories/{category}', 'getTicketsByCategory');
 
-     });//  ./users/{user}/tickets
+     });//  ./users/{user}/tickets/{ticket}
 
+
+Route::prefix('users/{user}/comments')->middleware(['auth:sanctum', 'all.roles.access'])
+     ->group(function () {
+
+         Route::controller(CommentController::class)->group(function () {
+             Route::post('/tickets/{ticket}', 'store');//this user want to send cm for this ticket
+             Route::get('{comment}', 'show'); //this user want to see this cm
+
+             Route::get('/tickets/{ticket}/all-comments', 'allCommentsByTicketId'); //all comments of this ticket_id
+
+         });
+
+         /*Route::controller(TicketController::class)
+              ->group(function () {
+                  Route::get('/all-comments', 'allCommentsByTicketId'); //this user see all its own comments
+              });*/
+
+     });

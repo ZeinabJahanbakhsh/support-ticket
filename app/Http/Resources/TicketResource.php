@@ -28,7 +28,9 @@ class TicketResource extends JsonResource
             'priority'    => new PriorityResource($this->priority),
             'user'        => new UserResource($this->user),
             'status'      => new StatusResource($this->status),
+            'assigned_to' => new UserResource($this->assignedUser),
             'category'    => CategoryResource::collection($this->categories),
+            'comments'    => CommentResource::collection($this->comments)
         ];
     }
 }

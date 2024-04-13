@@ -18,7 +18,8 @@ class Comment extends Model
     ];
 
     protected $casts = [
-        'ticket_id' => 'integer'
+        'ticket_id' => 'integer',
+        'user-id'   => 'integer'
     ];
 
 
@@ -33,5 +34,9 @@ class Comment extends Model
         return $this->belongsTo(Ticket::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }
