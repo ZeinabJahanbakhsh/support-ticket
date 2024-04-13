@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
 use App\Models\CategoryTicket;
+use App\Models\Comment;
 use App\Models\Label;
 use App\Models\LabelTicket;
 use App\Models\RoleUser;
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         DB::table('roles')->truncate();
         DB::table('users')->truncate();
         DB::table('statuses')->truncate();
+        DB::table('comments')->truncate();
 
         $this->call([
             RoleSeeder::class,
@@ -48,6 +50,7 @@ class DatabaseSeeder extends Seeder
         Ticket::factory(10)->create();
         CategoryTicket::factory(10)->create();
         LabelTicket::factory(10)->create();
+        Comment::factory(30)->create();
 
         Schema::enableForeignKeyConstraints();
 

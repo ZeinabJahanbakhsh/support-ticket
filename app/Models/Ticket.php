@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class Ticket extends Model
@@ -60,6 +61,12 @@ class Ticket extends Model
         return $this->belongsToMany(Label::class, 'label_ticket')
                     ->using(LabelTicket::class)
                     ->withTimestamps();
+    }
+
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'ticket_id');
     }
 
 
