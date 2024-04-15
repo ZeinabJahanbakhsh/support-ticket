@@ -73,7 +73,7 @@ Route::prefix('users/{user}/tickets')->middleware(['auth:sanctum', 'agent.defaul
          Route::post('', 'store');  //agent, default
 
          Route::get('{ticket}', 'show'); //agent, default //show its comments
-         Route::get('/', 'index');       //agent, default  TODO: be check again!
+         Route::get('/', 'index');       //agent, default
          Route::get('statuses/{status}', 'getTicketsByStatus');
          Route::get('priorities/{priority}', 'getTicketsByPriority');
          Route::get('categories/{category}', 'getTicketsByCategory');
@@ -81,20 +81,14 @@ Route::prefix('users/{user}/tickets')->middleware(['auth:sanctum', 'agent.defaul
      });//  ./users/{user}/tickets/{ticket}
 
 
-Route::prefix('users/{user}/comments')->middleware(['auth:sanctum', 'all.roles.access'])
+Route::prefix('users/{user}/tickets/{ticket}/comments')->middleware(['auth:sanctum', 'all.roles.access'])
      ->group(function () {
 
          Route::controller(CommentController::class)->group(function () {
-             Route::post('/tickets/{ticket}', 'store');//this user want to send cm for this ticket
-             //Route::get('{comment}', 'show'); //this user want to see this cm
-
-             Route::get('/tickets/{ticket}/all-comments', 'allCommentsByTicketId'); //all comments of this ticket_id
+             Route::post('', 'store');                //this user want to send cm for this ticket
+             Route::get('{comment}', 'show');         //this user want to see this cm
+             Route::get('', 'allCommentsByTicketId');  //all comments of this ticket_id
 
          });
-
-         /*Route::controller(TicketController::class)
-              ->group(function () {
-                  Route::get('/all-comments', 'allCommentsByTicketId'); //this user see all its own comments
-              });*/
 
      });

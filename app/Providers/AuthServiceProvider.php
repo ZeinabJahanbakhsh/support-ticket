@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
 use App\Enums\RoleEnum;
+use App\Models\Comment;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Policies\CommentPolicy;
 use App\Policies\TicketPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Models\Ticket' => TicketPolicy::class,
+        // 'App\Models\Comment' => CommentPolicy::class
 
     ];
 
@@ -26,12 +30,9 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //$this->registerPolicies();
-
-        \Gate::define('index-tickets', function (User $user){
-            $userRole = $user->roles->toArray();
-            return $userRole[0]['code'] == RoleEnum::admin->value;
-        });
+        // $this->registerPolicies();
 
     }
+
+
 }
