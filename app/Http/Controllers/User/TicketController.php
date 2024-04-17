@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Resources\LogResource;
 use App\Http\Resources\TicketResource;
 use App\Mail\SendTicketNotification;
 use App\Models\Category;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Activitylog\Models\Activity;
 use function App\Helpers\adminRole;
 
 
@@ -63,6 +65,8 @@ class TicketController extends Controller
 
         Mail::to($user->email)->send(new SendTicketNotification($user->name, $user->email));
 
+        //activity()->log('Look, I logged something');
+
         return response()->json([
             'message' => __('messages.store_success'),
             'data'    => $ticket
@@ -70,7 +74,7 @@ class TicketController extends Controller
     }
 
 
-    public function show(Ticket $ticket): TicketResource
+    public function show(User $user, Ticket $ticket): TicketResource
     {
         $this->authorize('view', $ticket);
         return new TicketResource($ticket);
@@ -150,6 +154,12 @@ class TicketController extends Controller
             'message' => __('messages.update_success'),
             'data'    => $ticket
         ]);
+    }
+
+
+    public function activityLogs(): AnonymousResourceCollection
+    {
+        return LogResource::collection(Activity::orderByDesc('id')->where('causer_id', Auth::user()->id)->get());
     }
 
 

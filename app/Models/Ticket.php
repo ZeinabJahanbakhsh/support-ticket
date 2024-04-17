@@ -3,17 +3,36 @@
 namespace App\Models;
 
 use App\Enums\StatusEnum;
+use App\Http\Controllers\Admin\TicketController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 
 class Ticket extends Model
 {
     use HasFactory;
+
+    use HasApiTokens, HasFactory, Notifiable;
+    use LogsActivity;
+
+    protected static $logOnlyDirty = true;
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+                         ->useLogName(request()->route()->getActionMethod())
+                         ->logOnly(['*']);
+    }
+
 
     protected $fillable = [
         'title',

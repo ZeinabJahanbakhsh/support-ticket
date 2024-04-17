@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Resources\LogResource;
 use App\Http\Resources\TicketResource;
 use App\Models\Category;
 use App\Models\CategoryTicket;
@@ -17,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
+use Spatie\Activitylog\Models\Activity;
 use function App\Helpers\adminRole;
 
 
@@ -149,4 +151,17 @@ class TicketController extends Controller
     }
 
 
+    public function activityLogs(): AnonymousResourceCollection
+    {
+        abort_if(
+            !adminRole(Auth::user()),
+            403,
+            __('messages.permission_deny')
+        );
+
+        return LogResource::collection(Activity::orderByDesc('id')->get());
+    }
+
+
 }
+

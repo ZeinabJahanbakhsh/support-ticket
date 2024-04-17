@@ -38,6 +38,10 @@ Route::put('admin/tickets/{ticket}', [\App\Http\Controllers\Admin\TicketControll
      ->middleware(['auth:sanctum', 'admin.agent.roles.access']);  //admin, agent
 
 
+Route::middleware(['auth:sanctum', 'agent.default.roles.access'])
+     ->get('users/{user}/tickets/logs', [\App\Http\Controllers\User\TicketController::class, 'activityLogs']);
+
+
 Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function () {
 
     //Label
@@ -51,6 +55,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function
 
 
     Route::controller(\App\Http\Controllers\Admin\TicketController::class)->prefix('tickets')->group(function () {
+        Route::get('/logs', 'activityLogs');
         Route::get('/', 'index');
         Route::get('{ticket}', 'show');
         Route::get('statuses/{status}', 'getTicketsByStatus');
@@ -66,18 +71,16 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'is.admin'])->group(function
 }); //  ./admin
 
 
-//Ticket
+//User
 Route::prefix('users/{user}/tickets')->middleware(['auth:sanctum', 'agent.default.roles.access'])
      ->controller(\App\Http\Controllers\User\TicketController::class)
      ->group(function () {
-         Route::post('', 'store');  //agent, default
-
+         Route::post('', 'store');       //agent, default
          Route::get('{ticket}', 'show'); //agent, default //show its comments
          Route::get('/', 'index');       //agent, default
          Route::get('statuses/{status}', 'getTicketsByStatus');
          Route::get('priorities/{priority}', 'getTicketsByPriority');
          Route::get('categories/{category}', 'getTicketsByCategory');
-
      });//  ./users/{user}/tickets/{ticket}
 
 
@@ -85,8 +88,8 @@ Route::prefix('users/{user}/tickets/{ticket}/comments')->middleware(['auth:sanct
      ->group(function () {
 
          Route::controller(CommentController::class)->group(function () {
-             Route::post('', 'store');                //this user want to send cm for this ticket
-             Route::get('{comment}', 'show');         //this user want to see this cm
+             Route::post('', 'store');                 //this user want to send cm for this ticket
+             Route::get('{comment}', 'show');          //this user want to see this cm
              Route::get('', 'allCommentsByTicketId');  //all comments of this ticket_id
 
          });
