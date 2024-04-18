@@ -20,7 +20,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Nette\Utils\Image;
 use Spatie\Activitylog\Models\Activity;
+use Str;
 use function App\Helpers\adminRole;
 
 
@@ -47,25 +51,28 @@ class TicketController extends Controller
     {
         $request->validated();
 
-        $ticket = null;
-        DB::transaction(function () use ($user, $request, &$ticket) {
+        $imageUrl = null;
+        $ticket   = null;
+
+        if ($request->input('attachment')) {
+            $imageUrl = $this->storeAttachment($request->input('attachment'), $user->id);
+        }
+
+        DB::transaction(function () use ($user, $request, &$ticket, &$imageUrl) {
 
             $ticket = $user->tickets()->forceCreate([
                 'title'       => $request->string('title'),
                 'description' => $request->string('description'),
-                'attachment'  => $request->file('attachment'),
+                'attachment'  => $imageUrl,
                 'priority_id' => $request->input('priority_id'),
                 'status_id'   => $request->integer('status_id'),
             ]);
 
             $ticket->categories()->attach($request->input('category_ids'));
-
             $ticket->labels()->attach($request->input('label_ids'));
         });
 
         Mail::to($user->email)->send(new SendTicketNotification($user->name, $user->email));
-
-        //activity()->log('Look, I logged something');
 
         return response()->json([
             'message' => __('messages.store_success'),
@@ -137,10 +144,15 @@ class TicketController extends Controller
 
         $request->validated();
 
+        $imageUrl = null;
+        if ($request->input('attachment')) {
+            $imageUrl = $this->storeAttachment($request->input('attachment'), $ticket->user_id);
+        }
+
         $ticket->forceFill([
             'title'       => $request->string('title'),
             'description' => $request->string('description'),
-            'attachment'  => $request->file('attachment'),
+            'attachment'  => $imageUrl,
             'priority_id' => $request->input('priority_id'),
             'status_id'   => $request->integer('status_id'),
         ])->save();
@@ -160,6 +172,21 @@ class TicketController extends Controller
     public function activityLogs(): AnonymousResourceCollection
     {
         return LogResource::collection(Activity::orderByDesc('id')->where('causer_id', Auth::user()->id)->get());
+    }
+
+
+
+    private function storeAttachment($base64Image, $userId): string
+    {
+        $extension = explode('/', mime_content_type($base64Image))[1];
+        $imageName = time() . '_' . $userId . '_' . Str::random(10) . '.' . $extension;
+        @list($type, $file_data) = explode(';', $base64Image);
+
+        $attachment = Storage::disk('ticket_attachment')->put($imageName, base64_decode($file_data));
+        $imageUrl   = Storage::url($imageName);
+        //dd( \File::put(storage_path(). '/attachment_' . $imageName, base64_decode($image))); //storage/attachment_....png
+
+        return $imageUrl;
     }
 
 

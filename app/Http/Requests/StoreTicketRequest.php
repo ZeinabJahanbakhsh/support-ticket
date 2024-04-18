@@ -26,7 +26,7 @@ class StoreTicketRequest extends FormRequest
         return [
             'title'        => ['required', 'string', 'max:300', 'min:3'],
             'description'  => ['required', 'string', 'max:1500', 'min:3'],
-            'attachment'   => [File::types(['png', 'jpg', 'docx', 'doc'])],
+            'attachment'   => ['nullable', 'string' /*'base64_image_size:500'*/],
             'priority_id'  => ['nullable', 'integer', 'exists:priorities,id'],
             'status_id'    => ['required', 'integer', 'exists:statuses,id'],
             'category_ids' => ['nullable', 'array', 'exists:categories,id'],
