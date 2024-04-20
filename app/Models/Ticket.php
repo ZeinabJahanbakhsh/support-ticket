@@ -28,6 +28,11 @@ class Ticket extends Model
 
     public function getActivitylogOptions(): LogOptions
     {
+        if (request()->route() == null) {
+            return LogOptions::defaults()
+                             ->logOnly(['*']);
+        }
+
         return LogOptions::defaults()
                          ->useLogName(request()->route()->getActionMethod())
                          ->logOnly(['*']);

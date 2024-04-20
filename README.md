@@ -7,6 +7,8 @@ This is **laravel api** , The task is fully described [in this article](https://
 - There are 3 roles in this case: admin, user agent and user default 
 - The admin has full permission for everything.
 - The admin can assign the ticket to another users which has agent role.
+- The admin gets an email after a ticket has been registered
+- Agent and default users can see their own ticket's log but the admin can see all of them 
 - Agent and default users can create ticket and register comments.
 - Agent users can edit their own tickets but default users can not!
 - You can see json data with [postman account](https://www.postman.com/blue-crater-7468/workspace/support-ticket)
@@ -18,7 +20,7 @@ This is **laravel api** , The task is fully described [in this article](https://
 - Authorization: Gate and Policy
 - Email verification: [Mail trap](https://mailtrap.io) 
 - Laravel-Activity log: [Spatie Laravel Activity Log](https://github.com/spatie/laravel-activitylog)
-- Console command : insert-demo-data
+
 
 # How to use:
 - Clone the repository with git clone

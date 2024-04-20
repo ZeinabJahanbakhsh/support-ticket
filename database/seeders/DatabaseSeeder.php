@@ -31,11 +31,11 @@ class DatabaseSeeder extends Seeder
         DB::table('labels')->truncate();
         DB::table('label_ticket')->truncate();
         DB::table('priorities')->truncate();
-        DB::table('tickets')->truncate();
         DB::table('roles')->truncate();
         DB::table('users')->truncate();
         DB::table('statuses')->truncate();
         DB::table('comments')->truncate();
+        DB::table('tickets')->truncate();
 
         $this->call([
             RoleSeeder::class,
@@ -44,13 +44,13 @@ class DatabaseSeeder extends Seeder
             PrioritySeeder::class
         ]);
 
-        Category::factory(10)->create();
+       /* Category::factory(10)->create();
         Label::factory(10)->create();
         User::factory(10)->create();
         Ticket::factory(10)->create();
         CategoryTicket::factory(10)->create();
         LabelTicket::factory(10)->create();
-        Comment::factory(30)->create();
+        Comment::factory(30)->create();*/
 
         Schema::enableForeignKeyConstraints();
 
