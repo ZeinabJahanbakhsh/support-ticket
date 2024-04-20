@@ -36,19 +36,15 @@ This is **laravel api** , The task is fully described [in this article](https://
 
 
 - Instead of run migrations and seeders you can run my console command:
-    - Run below code (it can create migrations and insert demo data with 3 users: an admin, some agents and some default users at the end run php artisan optimize:clear)
-      ``` 
-      php artisan insert-demo-data
-      ```
-    - If you don't want to insert any data, it is just enough to run:
-      ``` 
-      php artisan migrate 
+
+    ``` 
+      php artisan create:record {count}
       ```
 - Done! Run
   ```
   php artisan serv
   ```
- 
+  
 
 # User's credentials
 - Admin's credentials: admin@admin.com - 123456
