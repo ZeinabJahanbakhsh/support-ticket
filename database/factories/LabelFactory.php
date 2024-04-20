@@ -18,7 +18,7 @@ class LabelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->colorName,
+            'name' => fake()->colorName.'_' . \Str::random(5),
         ];
     }
 }
