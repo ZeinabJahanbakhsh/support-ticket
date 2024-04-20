@@ -38,7 +38,7 @@ This is **laravel api** , The task is fully described [in this article](https://
 - Instead of run migrations and seeders you can run my console command:
 
     ``` 
-      php artisan create:record {count}
+    php artisan create:record {count}
     ```
   
 - Done! Run
