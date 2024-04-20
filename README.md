@@ -39,7 +39,9 @@ This is **laravel api** , The task is fully described [in this article](https://
 
     ``` 
       php artisan create:record {count}
-      ```
+  
+    ```
+  
 - Done! Run
   ```
   php artisan serv
